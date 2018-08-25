@@ -15,6 +15,7 @@ float turnmultiplyer = 0.255;
 tByteArray signalstr;
 //==========================================================================================================
 //Subroutines go here
+// hello
 task lightSensorRefresh()
 {
 	while(true)
@@ -144,6 +145,7 @@ task main()
 			}
 			else
 			{
+				//search
 				setMotorSpeed(RightM, 0);
 				setMotorSpeed(LeftM, 0);
 				setMotorSpeed(RightM, -35);
