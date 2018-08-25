@@ -15,15 +15,22 @@ float turnmultiplyer = 0.255;
 tByteArray signalstr;
 //==========================================================================================================
 //Subroutines go here
+task lightSensorRefresh()
+{
+	while(true)
+	{
+		if (!MSLSAreadSensors(MSLSA, &signalstr[0]))
+		{
+			//eraseDisplay();
+			playSound(soundException);
+			//displayCenteredTextLine(4, "error!");
+			//sleep(5000);
+		}
+	}
+}
+//====================================================================================================================================================================================
 void rescue()
 {
-	if (!MSLSAreadSensors(MSLSA, &signalstr[0]))
-	{
-		//eraseDisplay();
-		playSound(soundException);
-		//displayCenteredTextLine(4, "error!");
-		//sleep(5000);
-	}
 	setMotorSpeed(RightM, 0);
 	setMotorSpeed(LeftM, 0);
 	setMotorSpeed(RightM, 35);
@@ -32,29 +39,15 @@ void rescue()
 	while(signalstr[4] <= 20)
 	{
 		//writeDebugStreamLine("SumoZone: %d", SumoZone);
-		while(SensorValue(EV3ultrasonic) <= 30 && signalstr[4] <= 20)
+		while(SensorValue(EV3ultrasonic) <= 20 && signalstr[4] <= 20)
 		{
 			setMotorSpeed(RightM, 35);
 			setMotorSpeed(LeftM, 35);
-			if (!MSLSAreadSensors(MSLSA, &signalstr[0]))
-			{
-				//eraseDisplay();
-				playSound(soundException);
-				//displayCenteredTextLine(4, "error!");
-				//sleep(5000);
-			}
 		}
 
 		setMotorSpeed(RightM, 15);
 		setMotorSpeed(LeftM, -15);
-		if (!MSLSAreadSensors(MSLSA, &signalstr[0]))
-		{
-			//eraseDisplay();
-			playSound(soundException);
-			//displayCenteredTextLine(4, "error!");
-			//sleep(5000);
-		}
-		wait1Msec(100);
+
 	}
 	setMotorSpeed(RightM, 0);
 	setMotorSpeed(LeftM, 0);
@@ -108,24 +101,10 @@ void waterTower2()
 		wait1Msec(500);
 		setMotorSpeed(RightM, 0);
 		setMotorSpeed(LeftM, 0);
-		if (!MSLSAreadSensors(MSLSA, &signalstr[0]))
-		{
-			//eraseDisplay();
-			playSound(soundException);
-			//displayCenteredTextLine(4, "error!");
-			//sleep(5000);
-		}
 		while(signalstr[4] >= 20)
 		{
 			setMotorSpeed(RightM, 35);
 			setMotorSpeed(LeftM, 35);
-			if (!MSLSAreadSensors(MSLSA, &signalstr[0]))
-			{
-				//eraseDisplay();
-				playSound(soundException);
-				//displayCenteredTextLine(4, "error!");
-				//sleep(5000);
-			}
 		}
 	}
 }
@@ -133,16 +112,10 @@ void waterTower2()
 //Line Follow
 task main()
 {
+	startTask(lightSensorRefresh, 4);
 	MSLSAinit(MSLSA);
 	while(true)
 	{
-		if (!MSLSAreadSensors(MSLSA, &signalstr[0]))
-		{
-			//eraseDisplay();
-			playSound(soundException);
-			//displayCenteredTextLine(4, "error!");
-			//sleep(5000);
-		}
 		int leftSideMSLSA = signalstr[0]*4 + signalstr[1]*3 + signalstr[2]*2 + signalstr[3]*1;
 		int rightSideMSLSA = signalstr[4]*1 + signalstr[5]*2 + signalstr[6]*3 + signalstr[7]*4;
 		int steering = (leftSideMSLSA - rightSideMSLSA - target)*turnmultiplyer;
