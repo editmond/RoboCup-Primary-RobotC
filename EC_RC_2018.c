@@ -1,5 +1,6 @@
 #pragma config(Sensor, S1,     MSLSA,          sensorEV3_GenericI2C)
-#pragma config(Sensor, S2,     SumoEyes,       sensorEV3_GenericI2C)
+#pragma config(Sensor, S2,     RightTouch,     sensorEV3_Touch)
+#pragma config(Sensor, S3,     LeftTouch,      sensorEV3_Touch)
 #pragma config(Sensor, S4,     EV3ultrasonic,  sensorEV3_Ultrasonic)
 #pragma config(Motor,  motorB,          LeftM,         tmotorEV3_Large, PIDControl, encoder)
 #pragma config(Motor,  motorC,          RightM,        tmotorEV3_Large, PIDControl, encoder)
@@ -16,7 +17,6 @@ tByteArray signalstr;
 //Subroutines go here
 void rescue()
 {
-	MSSUMOsetLongRange(SumoEyes);
 	if (!MSLSAreadSensors(MSLSA, &signalstr[0]))
 	{
 		//eraseDisplay();
@@ -29,25 +29,13 @@ void rescue()
 	setMotorSpeed(RightM, 35);
 	setMotorSpeed(LeftM, 35);
 	wait1Msec(2000);
-	int SumoZone = MSSUMOreadZone(SumoEyes);
-	//while (SumoZone != 1)
-	//{
-	//	setMotorSpeed(RightM, 35);
-	//	setMotorSpeed(LeftM, -35);
-	//	SumoZone = MSSUMOreadZone(SumoEyes);
-
-	//}
-	//setMotorSpeed(RightM, 0);
-	//setMotorSpeed(LeftM, 0);
 	while(signalstr[4] <= 20)
 	{
-		SumoZone = MSSUMOreadZone(SumoEyes);
 		//writeDebugStreamLine("SumoZone: %d", SumoZone);
-		while(SumoZone == 1 && signalstr[4] <= 20)
+		while(SensorValue(EV3ultrasonic) <= 30 && signalstr[4] <= 20)
 		{
 			setMotorSpeed(RightM, 35);
 			setMotorSpeed(LeftM, 35);
-			SumoZone = MSSUMOreadZone(SumoEyes);
 			if (!MSLSAreadSensors(MSLSA, &signalstr[0]))
 			{
 				//eraseDisplay();
@@ -57,9 +45,8 @@ void rescue()
 			}
 		}
 
-		setMotorSpeed(RightM, 25);
-		setMotorSpeed(LeftM, -25);
-		SumoZone = MSSUMOreadZone(SumoEyes);
+		setMotorSpeed(RightM, 15);
+		setMotorSpeed(LeftM, -15);
 		if (!MSLSAreadSensors(MSLSA, &signalstr[0]))
 		{
 			//eraseDisplay();
@@ -78,8 +65,7 @@ void rescue()
 //==========================================================================================================
 void waterTower2()
 {
-	int SumoZone = MSSUMOreadZone(SumoEyes);
-	if (SumoZone == 1)
+	if (SensorValue(EV3ultrasonic) <= 10)
 	{
 		setMotorSpeed(RightM, 0);
 		setMotorSpeed(LeftM, 0);
@@ -142,7 +128,6 @@ void waterTower2()
 //Line Follow
 task main()
 {
-	MSSUMOsetShortRange(SumoEyes);
 	MSLSAinit(MSLSA);
 	while(true)
 	{
