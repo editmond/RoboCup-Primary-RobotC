@@ -65,8 +65,13 @@ void rescue()
 //==========================================================================================================
 void waterTower2()
 {
-	if (SensorValue(EV3ultrasonic) <= 10)
+	if (SensorValue(LeftTouch) == 1 && SensorValue(RightTouch) == 1)
 	{
+		setMotorSpeed(RightM, 0);
+		setMotorSpeed(LeftM, 0);
+		setMotorSpeed(RightM, -35);
+		setMotorSpeed(LeftM, -35);
+		wait1Msec(600);
 		setMotorSpeed(RightM, 0);
 		setMotorSpeed(LeftM, 0);
 		wait1Msec(1000);
