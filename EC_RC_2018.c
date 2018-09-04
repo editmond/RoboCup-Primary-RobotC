@@ -37,6 +37,14 @@ void rescue()
 	setMotorSpeed(RightM, 35);
 	setMotorSpeed(LeftM, 35);
 	wait1Msec(2000);
+	setMotorSpeed(RightM, 0);
+	setMotorSpeed(LeftM, 0);
+	setMotorSpeed(RightM, 35);
+	setMotorSpeed(LeftM, -35);
+	wait1Msec(500);
+	setMotorSpeed(RightM, 0);
+	setMotorSpeed(LeftM, 0);
+	wait1Msec(1000);
 	while(signalstr[4] <= 20)
 	{
 		//writeDebugStreamLine("SumoZone: %d", SumoZone);
